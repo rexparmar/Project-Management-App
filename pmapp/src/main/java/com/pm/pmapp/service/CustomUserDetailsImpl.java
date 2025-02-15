@@ -14,14 +14,11 @@ import java.util.List;
 
 @Service
 public class CustomUserDetailsImpl implements UserDetailsService {
-
     @Autowired
     private UserRepository repo;
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = repo.findByEmail(username);
-
         if(user==null){
             throw new UsernameNotFoundException("user not found with "+username);
         }
