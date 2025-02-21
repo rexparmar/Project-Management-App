@@ -39,31 +39,44 @@ public class AuthController {
     @Autowired
     private CustomUserDetailsImpl customUserDetailsImpl;
 
+//  This method is helpful for creating user. Parameter taking is User. Return type is ResponseEntity. we have a post mapping
+//    with signup url.
     @PostMapping("/signup")
     public ResponseEntity<AuthResponse>createUserHandler(@RequestBody User user) throws Exception{
+//        First we check if we already have user registered on our platform or not.
         User isUserExist = userRepository.findByEmail(user.getEmail());
+//        If we do then we throw an exception saying user already exists.
         if(isUserExist!=null){
             throw new Exception("Account already exists with : "+ user.getEmail());
         }
-
+//        If not then we create a new user. and set the attributes.
         User createdUser = new User();
         createdUser.setPassword(passwordEncoder.encode(user.getPassword()));
         createdUser.setEmail(user.getEmail());
         createdUser.setFullName(user.getFullName());
 
+//      We save the user in the database.
         User savedUser = userRepository.save(createdUser);
 
+//        We create a new authentication, using email and password. Then we set the authentication using getting
+//        context.
         Authentication authentication = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
+//        Then we create a jwt token for that user.
         String jwt = JwtProvider.generateToken(authentication);
 
+//        We create new auth response. And then send a mesasge that user has been successfully created. and then we set the
+//        jwt token as the response token.
         AuthResponse response = new AuthResponse();
         response.setMessage("Sign up success!!");
         response.setJwt(jwt);
 
+//        We return the response with jwt authentication token and http status as created.
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+
+
 
 
     @PostMapping("/signin")

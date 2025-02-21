@@ -42,7 +42,7 @@ public class ProjectController {
         return new ResponseEntity<>(createdProject, HttpStatus.OK);
     }
 
-    @PatchMapping("/{projectId")
+    @PatchMapping("/{projectId}")
     public ResponseEntity<Project> updateProject(
             @PathVariable Long projectId,
             @RequestHeader("Authorization")String jwt,
@@ -53,7 +53,7 @@ public class ProjectController {
         return new ResponseEntity<>(updatedProject, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{projectId")
+    @DeleteMapping("/{projectId}")
     public ResponseEntity<MessageResponse> deleteProject(
             @PathVariable Long projectId,
             @RequestHeader("Authorization")String jwt,
