@@ -1,11 +1,13 @@
 package com.pm.pmapp.contoller;
 
+import com.pm.pmapp.model.Chat;
 import com.pm.pmapp.model.Message;
 import com.pm.pmapp.model.Project;
 import com.pm.pmapp.model.User;
 import com.pm.pmapp.response.MessageResponse;
 import com.pm.pmapp.service.ProjectService;
 import com.pm.pmapp.service.UserService;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,17 @@ public class ProjectController {
 
     @Autowired
     private UserService userService;
+
+    @GetMapping
+    public ResponseEntity<List<Project>>getProjects(
+            @RequestParam(required = false)String category,
+            @RequestParam(required = false)String tag,
+            @RequestHeader("Authorization")String jwt
+    )throws Exception{
+        User user = userService.findUserProfileByJwt(jwt);
+        List<Project> projects=projectService.getProjectByTeam(user,category,tag);
+        return new ResponseEntity<>(projects,HttpStatus.OK);
+    }
 
     @GetMapping("/{projectId}")
     public ResponseEntity<Project> getProjectsById(
@@ -65,6 +78,25 @@ public class ProjectController {
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<Project>>searchProjects(
+            @RequestParam(required = false)String keyword,
+            @RequestHeader("Authorization")String jwt
+    )throws Exception{
+        User user = userService.findUserProfileByJwt(jwt);
+        List<Project> projects=projectService.searchProject(keyword,user);
+        return new ResponseEntity<>(projects,HttpStatus.OK);
+    }
+
+    @GetMapping("/{projectId}/chat")
+    public ResponseEntity<Chat> getChatByProjectId(
+            @PathVariable Long projectId,
+            @RequestHeader("Authorization")String jwt
+    ) throws Exception {
+        User user = userService.findUserProfileByJwt(jwt);
+        Chat chat = projectService.getChatByProjectId(projectId);
+        return new ResponseEntity<>(chat, HttpStatus.OK);
+    }
 
 
 }

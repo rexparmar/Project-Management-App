@@ -78,7 +78,7 @@ public class AuthController {
 
 
 
-
+//      We redirect user to the signin api when url ends with "/signin".
     @PostMapping("/signin")
     public ResponseEntity<AuthResponse> signin(@RequestBody LoginRequest loginRequest){
         String username = loginRequest.getEmail();
