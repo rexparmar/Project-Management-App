@@ -21,7 +21,7 @@ public class Issue {
     private long projectId;
     private String priority;
     private LocalDate dueDate;
-    private List<String> text = new ArrayList<>();
+    private List<String> tags = new ArrayList<>();
 
     @ManyToOne
     private User assignee;
@@ -32,5 +32,5 @@ public class Issue {
 
     @JsonIgnore
     @OneToMany(mappedBy = "issue",cascade = CascadeType.ALL,orphanRemoval = true)
-    private List<Comments> comments = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
 }
