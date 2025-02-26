@@ -1,11 +1,13 @@
 package com.pm.pmapp.contoller;
 
 import com.pm.pmapp.config.JwtProvider;
+import com.pm.pmapp.model.Subscription;
 import com.pm.pmapp.model.User;
 import com.pm.pmapp.repository.UserRepository;
 import com.pm.pmapp.request.LoginRequest;
 import com.pm.pmapp.response.AuthResponse;
 import com.pm.pmapp.service.CustomUserDetailsImpl;
+import com.pm.pmapp.service.SubscriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +41,8 @@ public class AuthController {
     @Autowired
     private CustomUserDetailsImpl customUserDetailsImpl;
 
+    @Autowired
+    private SubscriptionService subscriptionService;
 //  This method is helpful for creating user. Parameter taking is User. Return type is ResponseEntity. we have a post mapping
 //    with signup url.
     @PostMapping("/signup")
@@ -57,7 +61,7 @@ public class AuthController {
 
 //      We save the user in the database.
         User savedUser = userRepository.save(createdUser);
-
+        subscriptionService.createSubscription(savedUser);
 //        We create a new authentication, using email and password. Then we set the authentication using getting
 //        context.
         Authentication authentication = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
